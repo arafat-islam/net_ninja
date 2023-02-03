@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:net_ninja/quotes.dart';
+import './quote_card.dart';
 
 void main() => runApp(MyApp());
 
 class MyApp extends StatelessWidget {
+  const MyApp({super.key});
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -12,80 +14,39 @@ class MyApp extends StatelessWidget {
   }
 }
 
-class MyHomePage extends StatelessWidget {
+// ignore: must_be_immutable
+class MyHomePage extends StatefulWidget {
+  MyHomePage({super.key});
+
+  @override
+  State<MyHomePage> createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
   List<Quote> quotes = [
     Quote(text: 'This is first text', author: 'First Author', age: '23'),
     Quote(text: 'This is second text', author: 'Second Author', age: '23'),
     Quote(text: 'This is third text', author: 'Third Author', age: '23'),
     Quote(text: 'This is fourth text', author: 'Fourth Author', age: '23'),
     Quote(text: 'This is fifth text', author: 'Fifth Author', age: '23'),
-    Quote(text: 'This is sixth text', author: 'Sixth Author', age: '23')
+    Quote(text: 'This is sixth text', author: 'Sixth Author', age: '24')
   ];
-
-  Widget quoteTemplate(quote) {
-    return Card(
-      margin: EdgeInsets.fromLTRB(16, 16, 16, 0),
-      elevation: .5,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  quote.text,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.grey[600],
-                  ),
-                ),
-                Text(
-                  quote.age,
-                  style: TextStyle(
-                    fontSize: 18.0,
-                    color: Colors.grey[600],
-                  ),
-                ),
-              ],
-            ),
-            SizedBox(height: 6.0),
-            Text(
-              quote.author,
-              style: TextStyle(
-                fontSize: 16,
-                color: Colors.blue,
-              ),
-            ),
-            SizedBox(height: 5),
-            ElevatedButton(
-              onPressed: () {
-                print('button');
-              },
-              child: Text('Button'),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text('App Bar Demo'),
+        title: const Text('App Bar Demo'),
         actions: <Widget>[
           IconButton(
             onPressed: () {
               ScaffoldMessenger.of(context).showSnackBar(
-                SnackBar(
+                const SnackBar(
                   content: Text('This is a snabkar'),
                 ),
               );
             },
-            icon: Icon(Icons.add_alert),
+            icon: const Icon(Icons.add_alert),
             tooltip: 'Show Snakbar',
           ),
           IconButton(
@@ -106,13 +67,22 @@ class MyHomePage extends StatelessWidget {
                 },
               ));
             },
-            icon: Icon(Icons.navigate_next),
+            icon: const Icon(Icons.navigate_next),
             tooltip: 'Go to the next page',
           ),
         ],
       ),
       body: Column(
-        children: quotes.map((quote) => quoteTemplate(quote)).toList(),
+        children: quotes
+            .map((quote) => QuoteCard(
+                quote: quote,
+                delete: () {
+                  setState(() {
+                    quotes.remove(quote);
+                    print('Delete button pressed!');
+                  });
+                }))
+            .toList(),
       ),
     );
   }
